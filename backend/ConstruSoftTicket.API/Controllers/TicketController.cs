@@ -1,5 +1,6 @@
 using ConstruSoftTicket.Application.DTOs;
 using ConstruSoftTicket.Application.Interfaces;
+using ConstruSoftTicket.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ConstruSoftTicket.API.Controllers;

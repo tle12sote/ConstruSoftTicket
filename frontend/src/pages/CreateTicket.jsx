@@ -1,37 +1,40 @@
 import React, { useState } from "react";
+import "../styles/Ticket.css";
 
 export default function CreateTicket() {
+  // Estados
   const [titulo, setTitulo] = useState("");
   const [descripcion, setDescripcion] = useState("");
 
+  // Función al enviar
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const ticket = {
-      titulo,
-      descripcion,
-    };
+  try {
+    const response = await fetch("http://localhost:5010/api/Ticket", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        titulo,
+        descripcion
+      })
+    });
 
-    try {
-      const response = await fetch("http://localhost:5010/api/ticket", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(ticket),
-      });
-
-      if (!response.ok) {
-        throw new Error("Error al registrar ticket");
-      }
-
-      alert("Ticket registrado ✅");
+    if (response.ok) {
+      alert("Ticket registrado correctamente");
       setTitulo("");
       setDescripcion("");
-    } catch (error) {
-      alert(error.message);
+    } else {
+      alert("Error al registrar el ticket");
     }
-  };
+
+  } catch (error) {
+    console.error(error);
+    alert("Error de conexión");
+  }
+};
 
   return (
     <div>
