@@ -1,65 +1,107 @@
-import React, { useState } from "react";
-import "../styles/Ticket.css";
+import { useState } from "react";
+import InputField from "../components/InputField";
+import FormMessage from "../components/FormMessage";
+import { createTicket } from "../services/ticketService";
+import "../styles/Ticket.css"
 
 export default function CreateTicket() {
-  // Estados
-  const [titulo, setTitulo] = useState("");
-  const [descripcion, setDescripcion] = useState("");
-
-  // Función al enviar
-  const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  try {
-    const response = await fetch("http://localhost:5010/api/Ticket", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        titulo,
-        descripcion
-      })
+  const [formData, setFormData] = useState({
+    titulo: "",
+    descripcion: ""
+  });
+ 
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+ 
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+ 
+    setFormData({
+      ...formData,
+      [name]: value
     });
-
-    if (response.ok) {
-      alert("Ticket registrado correctamente");
-      setTitulo("");
-      setDescripcion("");
-    } else {
-      alert("Error al registrar el ticket");
-    }
-
+  };
+ 
+  const isFormValid = () => {
+    return (
+      formData.titulo.trim().length > 0 &&
+      formData.descripcion.trim().length > 0
+    );
+  };
+  const handleSubmit = async (event) => {
+  event.preventDefault();
+ 
+  if (!isFormValid()) {
+    setMessageType("error");
+    setMessage("Debe completar el título y la descripción del ticket.");
+    return;
+  }
+ 
+  try {
+    setIsSubmitting(true);
+    setMessage("");
+    setMessageType("");
+ 
+    const result = await createTicket({
+      titulo: formData.titulo.trim(),
+      descripcion: formData.descripcion.trim()
+    });
+ 
+    setMessageType("success");
+    setMessage(result.mensaje || "Ticket registrado correctamente.");
+ 
+    setFormData({
+      titulo: "",
+      descripcion: ""
+    });
   } catch (error) {
-    console.error(error);
-    alert("Error de conexión");
+    setMessageType("error");
+    setMessage("No se pudo registrar el ticket. Revise la conexión con la API.");
+    console.error("Error al registrar ticket:", error);
+  } finally {
+    setIsSubmitting(false);
   }
 };
-
-  return (
-    <div>
-      <h2>Crear Ticket</h2>
-
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Título</label>
-          <input
-            type="text"
-            value={titulo}
-            onChange={(event) => setTitulo(event.target.value)}
-          />
-        </div>
-
-        <div>
-          <label>Descripción</label>
-          <textarea
-            value={descripcion}
-            onChange={(event) => setDescripcion(event.target.value)}
-          />
-        </div>
-
-        <button type="submit">Registrar ticket</button>
-      </form>
-    </div>
-  );
+return (
+  <main>
+    <h1>Registro de Ticket</h1>
+ 
+    <p>
+      Complete la información básica de la incidencia técnica. Los datos
+      ingresados deben ser claros para facilitar su atención posterior.
+    </p>
+ 
+    <form onSubmit={handleSubmit}>
+      <InputField
+        label="Título del ticket"
+        name="titulo"
+        value={formData.titulo}
+        placeholder="Ejemplo: PC no enciende"
+        required={true}
+        onChange={handleChange}
+      />
+ 
+      <div>
+        <label htmlFor="descripcion">Descripción de la incidencia</label>
+ 
+        <textarea
+          id="descripcion"
+          name="descripcion"
+          value={formData.descripcion}
+          placeholder="Describa brevemente el problema encontrado"
+          required
+          rows="5"
+          onChange={handleChange}
+        />
+      </div>
+ 
+      <button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? "Registrando..." : "Registrar ticket"}
+      </button>
+    </form>
+ 
+    <FormMessage type={messageType} message={message} />
+  </main>
+);
 }
