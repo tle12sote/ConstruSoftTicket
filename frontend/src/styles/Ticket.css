@@ -1,110 +1,227 @@
-/* Contenedor principal estilo "tarjeta" */
-main {
-  max-width: 500px;
-  margin: 40px auto;
-  padding: 30px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+/* ===========================
+   Ticket.css — Sistema de Tickets
+   Estética: industrial / utilidad clara
+   =========================== */
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+/* ── Variables ── */
+:root {
+  --font-main: 'IBM Plex Sans', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  --color-bg: #f5f4f0;
+  --color-surface: #ffffff;
+  --color-border: #d6d3cc;
+  --color-border-focus: #1a1a1a;
+
+  --color-text-primary: #111110;
+  --color-text-secondary: #5a5852;
+  --color-text-muted: #9a978f;
+
+  --color-accent: #1a1a1a;
+  --color-accent-hover: #333330;
+
+  --color-success-bg: #eaf5e8;
+  --color-success-text: #2a6b25;
+  --color-success-border: #9acf94;
+
+  --color-error-bg: #fdf0ef;
+  --color-error-text: #8b2e2e;
+  --color-error-border: #e8a9a9;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+
+  --transition: 140ms ease;
+}
+
+/* ── Base ── */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-/* Tipografía de los textos descriptivos */
-main h1 {
-  color: #2c3e50;
-  margin-top: 0;
-  margin-bottom: 8px;
-  font-size: 24px;
+body {
+  font-family: var(--font-main);
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  min-height: 100vh;
 }
 
-main p {
-  color: #666666;
-  font-size: 14px;
-  line-height: 1.5;
-  margin-bottom: 24px;
+/* ── Main container ── */
+main {
+  max-width: 560px;
+  margin: 3rem auto;
+  padding: 0 1.25rem 3rem;
 }
 
-/* Layout del formulario usando Flexbox */
+/* ── Título ── */
+main > h1 {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1.5px solid var(--color-border);
+}
+
+/* ── Formulario ── */
 form {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1.5rem;
 }
 
-/* Estilos de las etiquetas (labels) */
+/* ── Grupos de campo ── */
+form > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* ── Labels ── */
 label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 6px;
-  color: #34495e;
-  font-size: 14px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
 }
 
-/* Estilos generales para inputs y textareas */
-/* (Esto aplicará al textarea y al input que esté dentro de tu <InputField> si usa etiquetas estándar) */
+/* ── Inputs, textarea, select ── */
 input[type="text"],
-textarea {
+textarea,
+select {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 14px;
-  font-family: inherit;
-  box-sizing: border-box;
-  transition: all 0.3s ease;
-  background-color: #f8fafc;
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  color: var(--color-text-primary);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.85rem;
+  transition: border-color var(--transition), background var(--transition);
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
-/* Solo permitir redimensionar el textarea hacia abajo */
+input[type="text"]:hover,
+textarea:hover,
+select:hover {
+  border-color: #b0ada5;
+}
+
+input[type="text"]:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--color-border-focus);
+  background: #ffffff;
+}
+
+input[type="text"]::placeholder {
+  color: var(--color-text-muted);
+  font-size: 0.88rem;
+}
+
+/* ── Textarea ── */
 textarea {
   resize: vertical;
-  min-height: 100px;
+  min-height: 120px;
+  line-height: 1.6;
 }
 
-/* Efecto cuando el usuario hace clic en el input/textarea */
-input[type="text"]:focus,
-textarea:focus {
-  outline: none;
-  border-color: #3b82f6;
-  background-color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-}
-
-/* Estilos del botón */
-button[type="submit"] {
-  background-color: #3b82f6;
-  color: #ffffff;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: 600;
+/* ── Select ── */
+select {
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.1s ease;
-  margin-top: 8px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235a5852' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  padding-right: 2.2rem;
 }
 
-/* Efecto hover del botón */
+select option[value=""] {
+  color: var(--color-text-muted);
+}
+
+/* ── Botón submit ── */
+button[type="submit"] {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  padding: 0.7rem 1.5rem;
+  cursor: pointer;
+  transition: background var(--transition), transform var(--transition);
+  align-self: flex-start;
+  margin-top: 0.25rem;
+}
+
 button[type="submit"]:hover:not(:disabled) {
-  background-color: #2563eb;
+  background: var(--color-accent-hover);
 }
 
-/* Efecto click del botón */
 button[type="submit"]:active:not(:disabled) {
   transform: scale(0.98);
 }
 
-/* Estilo cuando el botón está deshabilitado (cargando) */
 button[type="submit"]:disabled {
-  background-color: #93c5fd;
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
-/* Responsive: Ajustes para pantallas de celular */
+/* ── FormMessage ── */
+.form-message {
+  margin-top: 1.25rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-weight: 500;
+  border-left: 3px solid;
+}
+
+.form-message.success {
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+  border-color: var(--color-success-border);
+  border-left-color: #3a8f33;
+}
+
+.form-message.error {
+  background: var(--color-error-bg);
+  color: var(--color-error-text);
+  border-color: var(--color-error-border);
+  border-left-color: #c94040;
+}
+
+/* ── Responsive ── */
 @media (max-width: 600px) {
   main {
-    margin: 20px;
-    padding: 20px;
+    margin: 1.5rem auto;
+  }
+
+  form {
+    padding: 1.25rem;
+  }
+
+  button[type="submit"] {
+    width: 100%;
+    text-align: center;
   }
 }
