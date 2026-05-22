@@ -54,10 +54,19 @@ export default function Auth() {
     try {
       if (isLogin) {
         await login({ email, password });
+
+        alert("Login correcto ✅");
         navigate("/tickets");
+
       } else {
         await register({ email, password });
+
+        alert("Usuario creado correctamente ✅"); // 👈 mensaje
         setIsLogin(true);
+
+        // limpiar campos (opcional pero pro)
+        setEmail("");
+        setPassword("");
       }
     } catch (error) {
       alert(error.message);

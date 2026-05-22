@@ -5,6 +5,7 @@ import { createTicket } from "../services/ticketService";
 import "../styles/Ticket.css";
 
 export default function CreateTicket() {
+
   const [formData, setFormData] = useState({
     titulo: "",
     descripcion: "",
@@ -13,10 +14,14 @@ export default function CreateTicket() {
     archivoUrl: ""
   });
 
+  const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // =========================
+  // HANDLE CHANGE
+  // =========================
   const handleChange = (event) => {
     const { name, value } = event.target;
 
@@ -24,27 +29,54 @@ export default function CreateTicket() {
       ...formData,
       [name]: value
     });
+
+    setErrors({
+      ...errors,
+      [name]: ""
+    });
   };
 
-  const isFormValid = () => {
-    return (
-      formData.titulo.trim() &&
-      formData.descripcion.trim() &&
-      formData.prioridad.trim() &&
-      formData.categoria.trim()
-    );
+  // VALIDAR FORMULARIO
+  const validateForm = () => {
+
+    const newErrors = {};
+
+    // VALIDAR TITULO
+    if (!formData.titulo.trim()) {
+      newErrors.titulo = "El titulo es obligatorio.";
+    } else if (formData.titulo.trim().length < 5) {
+      newErrors.titulo =
+        "El titulo debe tener al menos 5 caracteres.";
+    }
+
+    // VALIDAR DESCRIPCION
+    if (!formData.descripcion.trim()) {
+      newErrors.descripcion = "La descripcion es obligatoria.";
+    } else if (formData.descripcion.trim().length < 10) {
+      newErrors.descripcion =
+        "La descripcion debe tener al menos 10 caracteres.";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
   };
 
+  // SUBMIT
   const handleSubmit = async (event) => {
+
     event.preventDefault();
 
-    if (!isFormValid()) {
-      setMessageType("error");
-      setMessage("Complete todos los campos obligatorios.");
+    setMessage("");
+    setMessageType("");
+
+    // VALIDAR
+    if (!validateForm()) {
       return;
     }
 
     try {
+
       setIsSubmitting(true);
 
       const result = await createTicket({
@@ -52,12 +84,13 @@ export default function CreateTicket() {
         descripcion: formData.descripcion.trim(),
         prioridad: formData.prioridad,
         categoria: formData.categoria,
-        archivoUrl: formData.archivoUrl.trim() || null // opcional
+        archivoUrl: formData.archivoUrl.trim() || null
       });
 
       setMessageType("success");
-      setMessage(result.mensaje || "Ticket creado correctamente.");
+      setMessage(result.mensaje);
 
+      // LIMPIAR FORMULARIO
       setFormData({
         titulo: "",
         descripcion: "",
@@ -66,42 +99,64 @@ export default function CreateTicket() {
         archivoUrl: ""
       });
 
+      setErrors({});
+
     } catch (error) {
+
       setMessageType("error");
-      setMessage("Error al registrar ticket.");
-      console.error(error);
+      setMessage(
+        "No se pudo registrar el ticket. Verifique la informacion ingresada."
+      );
+
     } finally {
+
       setIsSubmitting(false);
+
     }
   };
 
   return (
     <main>
+
       <h1>Registro de Ticket</h1>
 
       <form onSubmit={handleSubmit}>
+
         {/* TITULO */}
         <InputField
           label="Título"
           name="titulo"
           value={formData.titulo}
+          placeholder="Ejemplo: Equipo no enciende"
+          required={true}
           onChange={handleChange}
+          error={errors.titulo}
         />
 
-        {/* DESCRIPCIÓN */}
+        {/* DESCRIPCION */}
         <div>
+
           <label>Descripción</label>
+
           <textarea
             name="descripcion"
             value={formData.descripcion}
-            onChange={handleChange}
+            placeholder="Describa detalladamente el problema"
             rows="5"
+            onChange={handleChange}
           />
+
+          {errors.descripcion && (
+            <p>{errors.descripcion}</p>
+          )}
+
         </div>
 
         {/* PRIORIDAD */}
         <div>
+
           <label>Prioridad</label>
+
           <select
             name="prioridad"
             value={formData.prioridad}
@@ -112,11 +167,14 @@ export default function CreateTicket() {
             <option value="Media">Media</option>
             <option value="Alta">Alta</option>
           </select>
+
         </div>
 
         {/* CATEGORIA */}
         <div>
+
           <label>Categoría</label>
+
           <select
             name="categoria"
             value={formData.categoria}
@@ -128,11 +186,14 @@ export default function CreateTicket() {
             <option value="Red">Red</option>
             <option value="Otro">Otro</option>
           </select>
+
         </div>
 
-        {/* ARCHIVO URL */}
+        {/* ARCHIVO */}
         <div>
+
           <label>Archivo (URL opcional)</label>
+
           <input
             type="text"
             name="archivoUrl"
@@ -140,14 +201,20 @@ export default function CreateTicket() {
             onChange={handleChange}
             placeholder="https://..."
           />
+
         </div>
 
         <button type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Registrando..." : "Registrar ticket"}
         </button>
+
       </form>
 
-      <FormMessage type={messageType} message={message} />
+      <FormMessage
+        type={messageType}
+        message={message}
+      />
+
     </main>
   );
 }

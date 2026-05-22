@@ -5,7 +5,8 @@ export default function InputField({
     onChange,
     placeholder,
     type = "text",
-    required = false
+    required = false,
+    error = ""
 }) {
     return (
         <div>
@@ -20,6 +21,11 @@ export default function InputField({
                 required={placeholder}
                 onChange={onChange}
             />
+            {error && (
+                <p>
+                    {error}
+                </p>
+            )}
         </div>
     )
 }

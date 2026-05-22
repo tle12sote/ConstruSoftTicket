@@ -20,6 +20,9 @@ public class TicketService : ITicketService
             Id = Guid.NewGuid(),
             Titulo = dto.Titulo,
             Descripcion = dto.Descripcion,
+            Prioridad = dto.Prioridad,
+            Categoria = dto.Categoria,
+            ArchivoUrl = dto.ArchivoUrl,
             FechaCreacion = DateTime.UtcNow,
             Estado = "Abierto"
         };

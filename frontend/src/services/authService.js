@@ -14,7 +14,12 @@ export const login = async (data) => {
     throw new Error("Credenciales incorrectas");
   }
 
-  return await response.json();
+  const result = await response.json();
+
+  // 🔥 GUARDAR TOKEN (CLAVE)
+  localStorage.setItem("token", result.token);
+
+  return result;
 };
 
 // 📝 REGISTER
@@ -31,5 +36,10 @@ export const register = async (data) => {
     throw new Error("Error al registrar");
   }
 
-  return await response.text();
+  return await response.json();
+};
+
+// 🔓 LOGOUT (BONUS)
+export const logout = () => {
+  localStorage.removeItem("token");
 };
